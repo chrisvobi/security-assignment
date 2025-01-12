@@ -29,7 +29,7 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
 		$new_password = trim($_POST['new_password']);
 
 		// Connect to the database
-		$conn=mysqli_connect("localhost","root","","pwd_mgr");
+		$conn=mysqli_connect("localhost","reguser","regpass","pwd_mgr");
 		// Check connection
 		if (mysqli_connect_errno())	{
 		  echo "Failed to connect to MySQL: " . mysqli_connect_error();
