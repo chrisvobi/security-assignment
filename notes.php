@@ -115,11 +115,16 @@ if(isset($_POST['new_note']) && trim($_POST['new_note']) !='') {
 	*/
 
 	// Insert new note
-	$sql_query = "INSERT INTO notes (login_user_id,note) VALUES " .
-				 "((SELECT id FROM login_users WHERE username='{$username}'),('{$new_note}'));";
+	// $sql_query = "INSERT INTO notes (login_user_id,note) VALUES " .
+	//			 "((SELECT id FROM login_users WHERE username='{$username}'),('{$new_note}'));";
 	//echo $sql_query;
-	
-	$result = $conn->query($sql_query);
+    $stmt = $conn->prepare("INSERT INTO notes (login_user_id, note) VALUES 
+                            ((SELECT id FROM login_users WHERE username = ?), ?)");
+    $stmt->bind_param("ss", $username, $new_note);
+    $stmt->execute();
+	$result = $stmt->get_result();
+
+	// $result = $conn->query($sql_query);
 	$conn -> close();
 
 	// After processing, redirect to the same page to clear the form
