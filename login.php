@@ -35,11 +35,15 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
 		}
 
 		// xxx' OR 1=1; -- '
-		$sql_query = "SELECT * FROM login_users WHERE username='{$username}' AND password='{$password}';";
+		// $sql_query = "SELECT * FROM login_users WHERE username='{$username}' AND password='{$password}';";
+		$stmt = $conn->prepare("SELECT * FROM login_users WHERE username=? AND password=?");
+		$stmt->bind_param("ss", $_POST['username'], $_POST['password']);
+		$stmt->execute();
+		$result = $stmt->get_result();
 		// echo $sql_query;
 
 		// Check if the credentials are valid
-		$result = $conn->query($sql_query);
+		// $result = $conn->query($sql_query);
 		unset($_POST['username']);
 		unset($_POST['password']);
 
