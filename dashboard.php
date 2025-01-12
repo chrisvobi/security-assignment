@@ -46,10 +46,15 @@ if(isset($_POST['new_website'], $_POST['new_username'], $_POST['new_password']) 
 	$new_password = trim($_POST["new_password"]);
 
 	// Insert new web site
-	$sql_query = "INSERT INTO websites (login_user_id,web_url,web_username,web_password) VALUES " .
-				"((SELECT id FROM login_users WHERE username='{$username}'),'{$new_website}','{$new_username}','{$new_password}');";
+	// $sql_query = "INSERT INTO websites (login_user_id,web_url,web_username,web_password) VALUES " .
+	//			"((SELECT id FROM login_users WHERE username='{$username}'),'{$new_website}','{$new_username}','{$new_password}');";
+	$stmt = $conn->prepare("INSERT INTO websites (login_user_id,web_url,web_username,web_password) VALUES " .
+				"((SELECT id FROM login_users WHERE username=?),?,?,?)");
+	$stmt->bind_param("ssss", $username, $new_website, $new_username, $new_password);
+	$stmt->execute();
+	$result = $stmt->get_result();
 	//echo $sql_query;
-	$result = $conn->query($sql_query);
+	// $result = $conn->query($sql_query);
 	$conn -> close();
 
 	// After processing, redirect to the same page to clear the form
@@ -65,9 +70,13 @@ if(isset($_POST['delete_website']) && trim($_POST["websiteid"] != '')) {
 	$webid = trim($_POST["websiteid"]);
 
 	// Delete selected web site
-	$sql_query = "DELETE FROM websites WHERE webid='{$webid}';";
+	// $sql_query = "DELETE FROM websites WHERE webid='{$webid}';";
+	$stmt = $conn->prepare("DELETE FROM websites WHERE webid=?");
+	$stmt->bind_param("i", $webid);
+	$stmt->execute();
+	$result = $stmt->get_result();
 	//echo $sql_query;
-	$result = $conn->query($sql_query);
+	// $result = $conn->query($sql_query);
 	$conn -> close();
 
 	// After processing, redirect to the same page to clear the form
@@ -77,9 +86,13 @@ if(isset($_POST['delete_website']) && trim($_POST["websiteid"] != '')) {
 }
 
 // Display list of user's web sites
-$sql_query = "SELECT * FROM websites INNER JOIN login_users ON websites.login_user_id=login_users.id WHERE login_users.username='{$username}';";
+// $sql_query = "SELECT * FROM websites INNER JOIN login_users ON websites.login_user_id=login_users.id WHERE login_users.username='{$username}';";
+$stmt = $conn->prepare("SELECT * FROM websites INNER JOIN login_users ON websites.login_user_id=login_users.id WHERE login_users.username=?");
+$stmt->bind_param("s", $username);
+$stmt->execute();
+$result = $stmt->get_result();
 //echo $sql_query;
-$result = $conn->query($sql_query);
+// $result = $conn->query($sql_query);
 
 //echo htmlspecialchars($username);
 echo "<h3>Entries of " . $username . "</h3>";
