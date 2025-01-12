@@ -27,7 +27,7 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
 		$password = trim($_POST['password']);
 
 		// Connect to the database
-		$conn=mysqli_connect("localhost","root","","pwd_mgr");
+		$conn=mysqli_connect("localhost","loginuser","logpass","pwd_mgr");
 		// Check connection
 		if (mysqli_connect_errno())	{
 		  echo "Failed to connect to MySQL: " . mysqli_connect_error();
