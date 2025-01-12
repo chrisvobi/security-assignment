@@ -31,7 +31,7 @@ if (!isset($_SESSION['loggedin']) || $_SESSION['loggedin'] !== true || $_SESSION
 $username = $_SESSION['username'];
 
 // Connect to the database
-$conn=mysqli_connect("localhost","root","","pwd_mgr");
+$conn=mysqli_connect("localhost","dashuser","dashpass","pwd_mgr");
 // Check connection
 if (mysqli_connect_errno())	{
   echo "Failed to connect to MySQL: " . mysqli_connect_error();
