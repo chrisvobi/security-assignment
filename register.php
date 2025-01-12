@@ -37,10 +37,13 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
 		}
 
 		// Insert a new user
-		$sql_query = "INSERT INTO login_users (username,password) VALUES ('{$new_username}','{$new_password}');";
+		// $sql_query = "INSERT INTO login_users (username,password) VALUES ('{$new_username}','{$new_password}');";
+		$stmt = $conn->prepare("INSERT INTO login_users (username,password) VALUES (?,?)");
+		$stmt->bind_param("ss", $new_username, $new_password);
+		$result = $stmt->execute();
 		//echo $sql_query;
 
-		$result = $conn->query($sql_query);
+		// $result = $conn->query($sql_query);
 
 		unset($_POST['new_username']);
 		unset($_POST['new_password']);
