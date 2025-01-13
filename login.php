@@ -7,6 +7,7 @@
 </head>
 
 <?php
+include_once 'password_helper.php';
 // Start a new session (or resume an existing one)
 session_start();
 
@@ -26,6 +27,9 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
 		$username = trim($_POST['username']);
 		$password = trim($_POST['password']);
 
+		$hashedPwd = getPasswordHash_Hex($username, $password);
+		$hashedPwd50 = substr($hashedPwd['hash'], 0, 50);
+
 		// Connect to the database
 		$conn=mysqli_connect("localhost","loginuser","logpass","pwd_mgr");
 		// Check connection
@@ -37,7 +41,7 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
 		// xxx' OR 1=1; -- '
 		// $sql_query = "SELECT * FROM login_users WHERE username='{$username}' AND password='{$password}';";
 		$stmt = $conn->prepare("SELECT * FROM login_users WHERE username=? AND password=?");
-		$stmt->bind_param("ss", $_POST['username'], $_POST['password']);
+		$stmt->bind_param("ss", $username, $hashedPwd50);
 		$stmt->execute();
 		$result = $stmt->get_result();
 		// echo $sql_query;
