@@ -1,3 +1,4 @@
 PHPSESSID=knjfug3u4gavdas9o4eupe38l1; seclab_user=u1
 seclab_user=u1; PHPSESSID=o1mg400lipd2mck69kpfnl6p5s
 PHPSESSID=1b3fopq8oj495knq3p7n28hgdf
+language=en; welcomebanner_status=dismiss; PHPSESSID=1b3fopq8oj495knq3p7n28hgdf
