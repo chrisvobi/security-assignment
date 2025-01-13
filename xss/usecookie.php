@@ -50,7 +50,7 @@ echo "<b>Logged in flag:</b> " . $loggedin . "<br>";
 
 	<br />
     If all above session parameters are defined, try accessing the
-	<a href="dashboard.php">dashboard</a>
+	<a href="../dashboard.php">dashboard</a>
 
 	<br /><br />
     <a href="listcookies.php">List cookies</a>
