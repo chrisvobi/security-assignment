@@ -143,8 +143,8 @@ echo "<h3>List of notes/comments</h3>";
 if (!empty($result) && $result->num_rows >= 1) {
 	while ($row = $result -> fetch_assoc()) {
 		echo "<div class='note'>";
-		echo	"<div class='note-content'>" . $row["note"] . "</div>";
-		echo	"<div class='note-signature'> by " . $row["username"] . "</div>";
+		echo "<div class='note-content'>" . htmlspecialchars($row["note"], ENT_QUOTES, 'UTF-8') . "</div>";
+		echo "<div class='note-signature'> by " . htmlspecialchars($row["username"], ENT_QUOTES, 'UTF-8') . "</div>";
 		echo "</div>";
 	}
 
