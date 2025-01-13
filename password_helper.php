@@ -36,11 +36,14 @@ function deriveEncryptionKey($username, $password) {
 
 // Encrypt data using AES-256-GCM
 function encryptData($data, $key) {
-    $nonce = random_bytes(12); // 12 bytes for AES-GCM nonce
+    $nonce = random_bytes(8); // use 8 bytes instead of 12 for nonce
     $cipher = "aes-256-gcm";
 
     // Encrypt the data
     $ciphertext = openssl_encrypt($data, $cipher, $key, OPENSSL_RAW_DATA, $nonce, $tag);
+
+    // set tag to 8 bytes
+    $tag = substr($tag, 0, 8);
 
     // Concatenate nonce, tag, and ciphertext for storage
     $result = $nonce . $tag . $ciphertext;
@@ -54,10 +57,10 @@ function decryptData($encryptedData, $key) {
     // Decode the base64-encoded data
     $encryptedData = base64_decode($encryptedData);
 
-    // Extract nonce (12 bytes), tag (16 bytes), and ciphertext
-    $nonce = substr($encryptedData, 0, 12);
-    $tag = substr($encryptedData, 12, 16);
-    $ciphertext = substr($encryptedData, 28);
+    // Extract nonce (8 bytes), tag (8 bytes), and ciphertext
+    $nonce = substr($encryptedData, 0, 8);
+    $tag = substr($encryptedData, 8, 8);
+    $ciphertext = substr($encryptedData, 16);
 
     // Decrypt the data
     $decryptedData = openssl_decrypt($ciphertext, $cipher, $key, OPENSSL_RAW_DATA, $nonce, $tag);
