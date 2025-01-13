@@ -9,6 +9,7 @@
     <h3>New user registration</h3>
 
 <?php
+include_once 'password_helper.php';
 // Start a new session (or resume an existing one)
 session_start();
 
@@ -28,6 +29,8 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
 		$new_username = trim($_POST['new_username']);
 		$new_password = trim($_POST['new_password']);
 
+		$hashedPwd = getPasswordHash_Hex($new_username, $new_password);
+
 		// Connect to the database
 		$conn=mysqli_connect("localhost","reguser","regpass","pwd_mgr");
 		// Check connection
@@ -39,7 +42,7 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
 		// Insert a new user
 		// $sql_query = "INSERT INTO login_users (username,password) VALUES ('{$new_username}','{$new_password}');";
 		$stmt = $conn->prepare("INSERT INTO login_users (username,password) VALUES (?,?)");
-		$stmt->bind_param("ss", $new_username, $new_password);
+		$stmt->bind_param("ss", $new_username, $hashedPwd['hash']);
 		$result = $stmt->execute();
 		//echo $sql_query;
 
