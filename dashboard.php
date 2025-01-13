@@ -19,6 +19,7 @@
 </head>
 
 <?php
+include 'password_helper.php';
 // Resume existing session (or start a new one)
 session_start();
 
@@ -45,12 +46,16 @@ if(isset($_POST['new_website'], $_POST['new_username'], $_POST['new_password']) 
 	$new_username = trim($_POST["new_username"]);
 	$new_password = trim($_POST["new_password"]);
 
+	// Encrypt the password
+	$encryptionKey = deriveEncryptionKey($new_username, $new_website);
+	$encrypted = encryptData($new_password, $encryptionKey);
+
 	// Insert new web site
 	// $sql_query = "INSERT INTO websites (login_user_id,web_url,web_username,web_password) VALUES " .
 	//			"((SELECT id FROM login_users WHERE username='{$username}'),'{$new_website}','{$new_username}','{$new_password}');";
 	$stmt = $conn->prepare("INSERT INTO websites (login_user_id,web_url,web_username,web_password) VALUES " .
 				"((SELECT id FROM login_users WHERE username=?),?,?,?)");
-	$stmt->bind_param("ssss", $username, $new_website, $new_username, $new_password);
+	$stmt->bind_param("ssss", $username, $new_website, $new_username, $encrypted);
 	$stmt->execute();
 	$result = $stmt->get_result();
 	//echo $sql_query;
@@ -99,9 +104,12 @@ echo "<h3>Entries of " . $username . "</h3>";
 
 if (!empty($result) && $result->num_rows >= 1) {
 	while ($row = $result -> fetch_assoc()) {
+		// Decrypt the password
+		$encryptionKey = deriveEncryptionKey($row["web_username"], $row["web_url"]);
+		$decrypted = decryptData($row["web_password"], $encryptionKey);
 		echo "<table border=0>";
 		echo	"<tr style='background-color: #f4f4f4;'><td colspan=2>" . $row["web_url"] . "</td></tr>" . 
-				"<tr><td>Username: " . $row["web_username"] . "</td><td>Password: " . $row["web_password"] . "</td></tr>";
+				"<tr><td>Username: " . $row["web_username"] . "</td><td>Password: " . $decrypted . "</td></tr>";
 
 		echo	"<tr><td><form method='POST' style='height: 3px'>" . 
 				"<input type='hidden' name='websiteid' value='" . $row["webid"] . "'>" .
